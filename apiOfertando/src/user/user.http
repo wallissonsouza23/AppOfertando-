@@ -1,0 +1,65 @@
+### Listar Usuários
+GET http://localhost:3000/user
+
+###
+
+### Obter Usuário por ID
+# Substitua <ID_DO_USUARIO_AQUI> pelo UUID real de um usuário no seu banco de dados.
+# Você pode obter um UUID de um usuário após cadastrá-lo ou fazer login.
+GET http://localhost:3000/user/<ID_DO_USUARIO_AQUI>
+
+###
+
+### Criar Usuário (VIA ENDPOINT DE REGISTRO DE AUTENTICAÇÃO)
+# Este é o endpoint principal para cadastrar novos usuários no seu sistema.
+# Ele não requer um token de autorização inicial.
+# Os campos devem corresponder ao seu RegisterDto (nome, telefone, dataNascimento, email, senha).
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "telefone": "5511987654321",
+  "dataNascimento": "1990-05-25",
+  "email": "joao.silva@example.com",
+  "senha": "UmaSenhaMuitoSegura123!"
+}
+
+###
+
+### Fazer Login (PARA OBTER UM TOKEN JWT)
+# Faça esta requisição para obter um token JWT após ter cadastrado um usuário.
+# Use as credenciais do usuário cadastrado.
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao.silva@example.com",
+  "senha": "UmaSenhaMuitoSegura123!"
+}
+
+###
+
+### Atualizar Usuário (REQUER TOKEN E ID)
+# Substitua <ID_DO_USUARIO_AQUI> pelo UUID do usuário que você quer atualizar.
+# Substitua <SEU_TOKEN_JWT> pelo token obtido na requisição de login.
+# O token deve começar com "Bearer " (com o espaço depois de Bearer).
+PATCH http://localhost:3000/user/<ID_DO_USUARIO_AQUI>
+Content-Type: application/json
+Authorization: Bearer <SEU_TOKEN_JWT>
+
+{
+  "telefone": "5511998877665",
+  "avatarUrl": "http://example.com/novo_avatar_joao.png"
+  // Você pode adicionar outros campos que seu UpdateUserDto permite aqui.
+}
+
+###
+
+### Excluir Usuário (REQUER TOKEN E ID)
+# Substitua <ID_DO_USUARIO_AQUI> pelo UUID do usuário que você quer excluir.
+# Substitua <SEU_TOKEN_JWT> pelo token obtido na requisição de login.
+DELETE http://localhost:3000/user/<ID_DO_USUARIO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>
+
+###

@@ -42,7 +42,7 @@ async function bootstrap() {
   // O prefixo '/uploads/avatars/' significa que para acessar um arquivo 'minhafoto.jpg'
   // dentro de 'uploads/avatars', a URL será 'http://localhost:3000/uploads/avatars/minhafoto.jpg'
   app.useStaticAssets(join(__dirname, '..', 'uploads', 'avatars'), {
-    prefix: '/uploads/avatars/', // <--- E AQUI
+    prefix: '/uploads/avatars/',
   });
 
   // Iniciando o servidor na porta definida

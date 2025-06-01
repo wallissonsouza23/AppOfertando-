@@ -10,11 +10,16 @@ import { Search } from '~/components/search';
 import {TrendingFoods} from '~/components/trending';
 import 'react-native-gesture-handler';
 
+import { useRouter } from 'expo-router';
+
+
 
 
 const statusBarHeight = Constants.statusBarHeight
 
 export default function Home() {
+  
+const router = useRouter();
   return (
   
     <ScrollView
@@ -32,12 +37,13 @@ export default function Home() {
                  <Image 
             source={require("../../../assets/banner1.png")}
             className='w-full h-auto md:h-60 rounded-br-full object-cover'/>
-                  <Pressable 
-                  className="absolute bottom-4 left-4 bg-black rounded-md px-4 py-2"
-                  onPress={() => console.log("Clicou no Começar!")}
-                >
-                  <Text className="text-white font-bold text-xs">COMEÇAR</Text>
-                </Pressable>
+                  <Pressable
+  className="absolute bottom-4 left-4 bg-black rounded-md px-4 py-2"
+  onPress={() => router.push('/modal')}
+>
+  <Text className="text-white font-bold text-xs">COMEÇAR</Text>
+</Pressable>
+
               </Pressable>    
           </PagerView>
     </View>

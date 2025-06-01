@@ -1,16 +1,15 @@
 // components/Header.tsx
 import { View, Pressable, Text } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native"; // Importe o hook useNavigation
+import { useNavigation } from "@react-navigation/native"; 
 
-export function Header() { // Remova '{ navigation }: any' das props
-  const navigation = useNavigation(); // Use o hook para obter a instância de navegação
+export function Header() { 
+  const navigation = useNavigation(); 
 
   return (
     <View className="w-full flex flex-row bg-orange-500 items-center justify-between px-4 py-2">
       <Pressable 
-        // Use 'as any' temporariamente para a tipagem se estiver com erro de TS
-        // (navigation as any).openDrawer()
+       
         onPress={() => (navigation as any).openDrawer()} 
         className="w-10 h-10 justify-center items-center rounded-full"
       >
@@ -25,9 +24,14 @@ export function Header() { // Remova '{ navigation }: any' das props
         </View>
       </View>
 
-      <Pressable className="w-10 h-10 justify-center items-center rounded-full">
-        <Feather name="bell" size={25} color="#fff"/> 
-      </Pressable>
+      <Pressable
+  onPress={() => (navigation as any).navigate('notifications')}
+
+  className="w-10 h-10 justify-center items-center rounded-full"
+>
+  <Feather name="bell" size={25} color="#fff" />
+</Pressable>
+
     </View>
   );
 }

@@ -1,13 +1,16 @@
 // app/CustomDrawer.tsx
-import React from 'react'; // Não precisa mais de useEffect ou useState para buscar dados
+import React from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert // Removido ActivityIndicator
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert
 } from 'react-native';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useAuth } from '../utils/auth'; // IMPORTAR o useAuth (para user, signOut, getToken)
+import { useAuth } from '../utils/auth';
 import { useRouter } from 'expo-router';
+
+
+const API_BASE = 'http://192.168.1.7:3000'; // Certifique-se de que este IP é o correto para o seu backend
 
 const ACTIVE_COLOR = '#FF6600';
 const INACTIVE_COLOR = '#000';
@@ -16,10 +19,7 @@ export default function CustomDrawer(props: any) {
   const navigation = useNavigation();
   const route = useRoute();
   const router = useRouter();
-  // Apenas use o user e signOut diretamente do contexto
-  const { user, signOut } = useAuth(); // Removido 'loading: authLoading', 'getToken'
-
-  // Não precisamos mais dos estados locais para userData ou dataLoading
+  const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -38,13 +38,10 @@ export default function CustomDrawer(props: any) {
     return route.name === routeName;
   };
 
-  // Se o user ainda não estiver carregado (o que é improvável aqui, pois _layout já espera por ele),
-  // ou se ele for null (deslogado), você pode mostrar um fallback ou um loading.
-  // No seu caso, o _layout já cuida do redirecionamento, então o `user` aqui deve estar disponível.
   if (!user) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Carregando perfil...</Text> {/* Mudei para comentário JSX */}
+        <Text>Carregando perfil...</Text>
       </View>
     );
   }
@@ -53,20 +50,23 @@ export default function CustomDrawer(props: any) {
     <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
       <View style={styles.header}>
         <Image
-          // Use user.avatarUrl diretamente
-          source={{ uri: user.avatarUrl || 'https://i.pravatar.cc/100?img=1' }}
+          source={{
+            // CONSTRUA A URL ABSOLUTA AQUI
+            uri: user.avatarUrl
+              ? `${API_BASE}${user.avatarUrl}` // SEM o cache-buster aqui para simplificar, mas você pode adicionar se quiser
+              : 'https://i.pravatar.cc/100?img=1',
+          }}
           style={styles.avatar}
         />
         <Text style={styles.name}>
-          {user.nome || 'Usuário'} {/* Use user.nome */}
+          {user.nome || 'Usuário'}
         </Text>
         <Text style={styles.email}>
-          {user.email || 'Email'} {/* Use user.email */}
+          {user.email || 'Email'}
         </Text>
       </View>
 
       <ScrollView style={styles.menu}>
-        {/* Seus itens de menu permanecem os mesmos */}
         <TouchableOpacity
           style={[
             styles.item,
@@ -166,6 +166,7 @@ export default function CustomDrawer(props: any) {
   );
 }
 
+// ... (seus estilos permanecem os mesmos) ...
 const styles = StyleSheet.create({
   loadingContainer: { // Mantenha este estilo caso precise
     flex: 1,

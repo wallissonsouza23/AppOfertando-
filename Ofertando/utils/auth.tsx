@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
 // Sua URL base da API. Certifique-se de que este IP é acessível pelo seu emulador/dispositivo.
-const API_BASE = 'http://172.20.10.2:3000'; // VERIFIQUE E AJUSTE ESTE IP SE NECESSÁRIO!
+const API_BASE = 'http://192.168.1.7:3000'; // VERIFIQUE E AJUSTE ESTE IP SE NECESSÁRIO!
 
 interface UserInfo {
   id: string;

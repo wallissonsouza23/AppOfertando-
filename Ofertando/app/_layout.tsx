@@ -6,7 +6,7 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { useRouter, SplashScreen } from 'expo-router';
 
- SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
   const { user, loading } = useAuth(); // Agora do seu utils/auth.ts
@@ -41,17 +41,20 @@ function AppContent() {
 
   return (
     <Stack>
-    
+
       <Stack.Screen name="login" options={{ headerShown: false }} />
       <Stack.Screen name="cadastro" options={{ headerShown: false }} />
       <Stack.Screen name="replacePass" options={{ headerShown: false }} />
       <Stack.Screen name="splash" options={{ headerShown: false }} />
       <Stack.Screen name="index" options={{ headerShown: false }} />
 
-  
+
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
 
-     
+      <Stack.Screen
+        name="notifications"
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       <Stack.Screen name="+not-found" options={{ headerShown: false }} />
     </Stack>

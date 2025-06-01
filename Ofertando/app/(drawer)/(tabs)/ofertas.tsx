@@ -1,9 +1,9 @@
 // app/(tabs)/ofertas.tsx
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView, Pressable, Image } from 'react-native';
 import React from 'react';
 import { Header } from '~/components/header';
 import Constants from 'expo-constants';
-
+import PagerView from 'react-native-pager-view';
 const statusBarHeight = Constants.statusBarHeight;
 
 export default function Ofertas() {
@@ -13,15 +13,25 @@ export default function Ofertas() {
       className="bg-slate-200"
       showsVerticalScrollIndicator={false}
     >
-      <View className="w-full px-4" style={{ marginTop: statusBarHeight + 8 }}>
-        <Header />
-
-        <View className="bg-orange-500 rounded-br-full h-36 justify-center px-4 mb-4">
-          <Text className="text-white font-bold text-xl">Anuncie seu mercado no Ofertando!</Text>
-          <Pressable className="bg-black px-4 py-2 mt-2 rounded-md w-28">
-            <Text className="text-white text-xs font-bold text-center">COMEÇAR</Text>
-          </Pressable>
-        </View>
+      <View className="w-full px-4" style= {{marginTop: statusBarHeight +8}}>
+          <Header/>
+          <View className="w-full h-36 md:h-60 mb-3 bg-orange-500 rounded-br-full ">
+            <PagerView style={{flex:1}} initialPage={0} pageMargin={14}>
+                    <Pressable className='w-full h-36 md:h-60 rounded-2xl'
+                    key={1}
+                    onPress={() => console.log("CLICOU NO BANNER 1")}>
+                       <Image 
+                  source={require("../../../assets/banner1.png")}
+                  className='w-full h-auto md:h-60 rounded-br-full object-cover'/>
+                        <Pressable 
+                        className="absolute bottom-4 left-4 bg-black rounded-md px-4 py-2"
+                        onPress={() => console.log("Clicou no Começar!")}
+                      >
+                        <Text className="text-white font-bold text-xs">COMEÇAR</Text>
+                      </Pressable>
+                    </Pressable>    
+                </PagerView>
+          </View>
 
         <Text className="text-lg font-bold mb-3">Ofertas da Semana</Text>
         <View className="gap-3">

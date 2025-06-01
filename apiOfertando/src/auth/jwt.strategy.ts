@@ -18,16 +18,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // É uma boa prática buscar o usuário no DB para garantir que ele ainda existe e não foi desativado/excluído
+  
     // payload.sub contém o ID do usuário (UUID) que definimos no JWT payload
-    const user = await this.userService.findById(payload.sub); // <-- Usar findById (nome do método corrigido)
+    const user = await this.userService.findById(payload.sub); 
 
     if (!user) {
       throw new UnauthorizedException('Usuário não encontrado.');
     }
-    // Retorne o que você quer que seja anexado a `req.user`
-    // Se a entidade User tiver um campo 'password'/'senha', delete-o antes de retornar
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
     const { senha, ...result } = user; // <-- Usar desestruturação para remover 'senha'
     return result; // O objeto user (sem a senha) será anexado a req.user
   }

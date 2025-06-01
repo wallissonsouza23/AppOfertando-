@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
-const API_BASE = 'http://172.20.10.2:3000'; // Certifique-se de que este IP é o correto para o seu backend
+const API_BASE = 'http://192.168.1.7:3000'; // Certifique-se de que este IP é o correto para o seu backend
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -27,7 +27,7 @@ const ProfileScreen = () => {
   const [editableNome, setEditableNome] = useState(user?.nome || '');
   const [editableTelefone, setEditableTelefone] = useState(user?.telefone || '');
 
-  
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.replace('/login');
@@ -108,19 +108,15 @@ const ProfileScreen = () => {
       });
 
       console.log('Frontend (perfil.tsx): Resposta do upload de avatar:', response.data);
-      let newAvatarRelativeUrl = response.data.avatarUrl; // Isso é o que o backend retorna
+      let newAvatarRelativeUrl = response.data.avatarUrl;
 
-      // **INÍCIO DA ALTERAÇÃO CRUCIAL (Já existia e está correta para este frontend)**
-      // Garante que o newAvatarRelativeUrl seja sempre relativo ao API_BASE
+
       if (newAvatarRelativeUrl && newAvatarRelativeUrl.startsWith(API_BASE)) {
-          // Se o backend retornou um URL absoluto (com API_BASE), remove o API_BASE
-          newAvatarRelativeUrl = newAvatarRelativeUrl.substring(API_BASE.length);
+        newAvatarRelativeUrl = newAvatarRelativeUrl.substring(API_BASE.length);
       }
-      // Garante que ele comece com '/' se for um caminho relativo para ser consistente
       if (newAvatarRelativeUrl && !newAvatarRelativeUrl.startsWith('/')) {
-          newAvatarRelativeUrl = '/' + newAvatarRelativeUrl;
+        newAvatarRelativeUrl = '/' + newAvatarRelativeUrl;
       }
-      // **FIM DA ALTERAÇÃO CRUCIAL**
 
       if (updateUser) {
         updateUser({ avatarUrl: newAvatarRelativeUrl });
@@ -226,7 +222,7 @@ const ProfileScreen = () => {
   const renderProfileItem = (icon: keyof typeof MaterialIcons.glyphMap, label: string, value: string | undefined | null, isEditable: boolean, onValueChange: (text: string) => void) => (
     <View style={styles.item}>
       <View style={styles.iconContainer}>
-        <MaterialIcons name={icon} size={22} color="#fff" />
+        <MaterialIcons name={icon} size={30} color="#fff" />
       </View>
       <View style={styles.itemContent}>
         {isEditing && isEditable ? (
@@ -265,7 +261,7 @@ const ProfileScreen = () => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <TouchableOpacity style={styles.headerBack} onPress={() => navigation.goBack()}>
-        <MaterialIcons name="arrow-back" size={26} color="#FFA500" />
+        <MaterialIcons name="arrow-back" size={30} color="#FFA500" />
       </TouchableOpacity>
 
       <View style={styles.profileHeader}>
@@ -279,7 +275,7 @@ const ProfileScreen = () => {
               {console.log('Frontend (perfil.tsx): URI COMPLETA da imagem para exibição (APÓS AJUSTE):', user.avatarUrl ? `${API_BASE}${user.avatarUrl}` : 'https://i.pravatar.cc/150?img=65')}
               <Image
                 source={{
-                  uri: user.avatarUrl 
+                  uri: user.avatarUrl
                     ? `${API_BASE}${user.avatarUrl}?cache=${new Date().getTime()}` // Adiciona timestamp para evitar cache
                     : 'https://i.pravatar.cc/150?img=65',
                 }}
@@ -300,7 +296,7 @@ const ProfileScreen = () => {
       <Text style={styles.sectionTitle}>Dados da Conta</Text>
 
       {renderProfileItem('person', 'Nome', editableNome, true, setEditableNome)}
-      {renderProfileItem('email', 'E-mail', user.email, false, () => {})}
+      {renderProfileItem('email', 'E-mail', user.email, false, () => { })}
       {renderProfileItem('phone', 'Telefone', editableTelefone, true, setEditableTelefone)}
       {user.dataNascimento && renderProfileItem(
         'cake',
@@ -311,7 +307,7 @@ const ProfileScreen = () => {
           year: 'numeric',
         }),
         false,
-        () => {}
+        () => { }
       )}
 
       <View style={styles.editButtonsContainer}>
@@ -379,11 +375,13 @@ const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  headerBack: { marginTop: 10 },
+  headerBack: { marginTop:20,
+    margin: 10,
+   },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 5,
     gap: 15,
   },
   avatar: { width: 60, height: 60, borderRadius: 30 },

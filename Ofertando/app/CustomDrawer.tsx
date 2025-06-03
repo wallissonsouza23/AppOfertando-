@@ -10,7 +10,7 @@ import { useAuth } from '../utils/auth';
 import { useRouter } from 'expo-router';
 
 
-const API_BASE = 'http://192.168.1.7:3000'; // Certifique-se de que este IP é o correto para o seu backend
+const API_BASE = 'http://172.20.10.2:3000'; // Certifique-se de que este IP é o correto para o seu backend
 
 const ACTIVE_COLOR = '#FF6600';
 const INACTIVE_COLOR = '#000';

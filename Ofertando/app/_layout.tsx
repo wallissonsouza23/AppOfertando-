@@ -9,7 +9,7 @@ import { useRouter, SplashScreen } from 'expo-router';
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { user, loading } = useAuth(); // Agora do seu utils/auth.ts
+  const { user, loading } = useAuth(); 
   const router = useRouter();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function AppContent() {
     console.log("AuthContext User Object:", user);
     console.log("AuthContext Loading State:", loading);
 
-    if (!loading) { // Verifica se o AuthProvider terminou de carregar
+    if (!loading) {
       SplashScreen.hideAsync();
       if (user) {
         // Se há um usuário, redireciona para a área autenticada
@@ -50,12 +50,15 @@ function AppContent() {
 
 
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-
-      <Stack.Screen
-        name="notifications"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+    <Stack.Screen
+        name="product/[id]"
+        options={{
+          presentation: 'modal', 
+          headerShown: false, 
+        }}
+      />
+      <Stack.Screen name="notifications" options={{ headerShown: false }} />
+      <Stack.Screen name="modal" options={{ presentation: 'modal',  headerShown: false, }} />
       <Stack.Screen name="+not-found" options={{ headerShown: false }} />
     </Stack>
   );

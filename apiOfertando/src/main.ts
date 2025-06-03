@@ -2,22 +2,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as admin from 'firebase-admin';
 import { join } from 'path';
-import { NestExpressApplication } from '@nestjs/platform-express'; // Importar este tipo
-import * as fs from 'fs'; // Importar fs para criar diretório
-
-// Inicializando o Firebase (mantenha sua configuração Firebase aqui)
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(), // Ou forneça o caminho para o arquivo de credenciais
-  });
-} else {
-  admin.app(); // Se já tiver uma instância, usa a instância existente
-}
+import { NestExpressApplication } from '@nestjs/platform-express';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule); // Adicionar o tipo aqui
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Habilitar CORS
   app.enableCors();
@@ -27,7 +17,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true, // Adicionado para maior segurança em DTOs
+      forbidNonWhitelisted: true,
     }),
   );
 
@@ -39,8 +29,6 @@ async function bootstrap() {
   }
 
   // Configurar para servir arquivos estáticos da pasta 'uploads/avatars'
-  // O prefixo '/uploads/avatars/' significa que para acessar um arquivo 'minhafoto.jpg'
-  // dentro de 'uploads/avatars', a URL será 'http://localhost:3000/uploads/avatars/minhafoto.jpg'
   app.useStaticAssets(join(__dirname, '..', 'uploads', 'avatars'), {
     prefix: '/uploads/avatars/',
   });

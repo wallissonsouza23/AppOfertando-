@@ -4,10 +4,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { ConfigModule } from '@nestjs/config'; // Importe ConfigModule
-
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module';
+import { ProductModule } from './product/product.module';
+import { MarketModule } from './market/market.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -29,12 +31,14 @@ import { AuthModule } from './auth/auth.module';
       username: 'root',
       password: '782501',
       database: 'ofertando',
-      // Melhor usar entities do data-source.ts ou listar explicitamente
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Isso pode funcionar, mas [User] ou AppDataSource.options.entities é mais explícito
-      synchronize: false,
+      autoLoadEntities: true, // <-- ADICIONE ESTA LINHA
+      synchronize: true,
     }),
     UserModule,
     AuthModule,
+    ProductModule,
+    MarketModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

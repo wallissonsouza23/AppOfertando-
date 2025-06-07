@@ -1,243 +1,330 @@
-import { View, Text, Image, ScrollView, TouchableOpacity, SafeAreaView, TextInput } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import CommentItem from '../../components/CommentItem'; // ajuste o caminho conforme seu projeto
-import { FoodProps } from '../../types/FoodProps';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  StatusBar,
+} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import CommentItem from '../../components/CommentItem';
+import axios from 'axios';
+import { useAuth } from '../../utils/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, router } from 'expo-router';
+import { CardHorizontalFood } from '../../components/ProductDetailsCard';
+import { API_BASE } from '../../utils/api';
 
-// Tipagem para comentário
-type Comment = {
+export type Comment = {
   id: string;
   text: string;
-  user: { id: string; nome: string };
+  likes: number;
+  user: {
+    id: string;
+    nome: string;
+    avatarUrl?: string;
+  };
+  createdAt: string;
+  replies?: Comment[];
 };
 
-export default function ProductDetail() {
-  const { id } = useLocalSearchParams();
-  const router = useRouter();
+export type FoodProps = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  market: {
+    name: string;
+    verified: boolean;
+    rating: number;
+  };
+  userLikePercentage?: number;
+};
 
-  const [product, setProduct] = useState<FoodProps | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function Produto({ productId: propProductId }: { productId?: string }) {
+  const routeParams = useLocalSearchParams();
+  const idFromRoute = typeof routeParams.id === 'string' ? routeParams.id : '1';
+  const productId = propProductId || idFromRoute;
 
-  // Estado dos comentários
+  const { user } = useAuth();
+  const userId = user?.id ?? '';
+
+  const [produto, setProduto] = useState<FoodProps | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [likedComments, setLikedComments] = useState<string[]>([]);
   const [commentText, setCommentText] = useState('');
+  const [sortByNewest, setSortByNewest] = useState(true);
 
-  // Simulação de usuário logado
-  const userId = 'user123'; // Troque para o ID real do usuário logado
-  const userName = 'Usuário Atual'; // Nome do usuário atual
-
-  // Carregar produto
-  useEffect(() => {
-    async function fetchProductById() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(`http://172.20.10.2:3000/products/${id}`);
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`Erro ${response.status}: ${text}`);
-        }
-        const data = await response.json();
-
-        const transformedData: FoodProps = {
-          ...data,
-          price: parseFloat(data.price),
-          userLikePercentage: Number(data.userLikePercentage),
-          market: {
-            ...data.market,
-            rating: parseFloat(data.market.rating),
-          }
-        };
-
-        setProduct(transformedData);
-      } catch (err) {
-        setError('Não foi possível carregar os detalhes do produto. Tente novamente mais tarde.');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (id) {
-      fetchProductById();
-      fetchComments();
-    }
-  }, [id]);
-
-  // Função para buscar comentários
-  async function fetchComments() {
+  const fetchProduto = async () => {
     try {
-      const res = await fetch(`http://172.20.10.2:3000/products/${id}/comments`);
-      if (!res.ok) throw new Error('Erro ao buscar comentários');
-      const data = await res.json();
-      setComments(data);
-    } catch (err) {
-      console.error(err);
+      const res = await axios.get(`${API_BASE}/products/${productId}`);
+      setProduto(res.data);
+    } catch {
+      Alert.alert('Erro', 'Produto não encontrado.');
     }
-  }
+  };
 
-  // Criar novo comentário
-  async function handleAddComment() {
-    if (commentText.trim() === '') return;
-
+  const fetchComments = async () => {
     try {
-      const res = await fetch(`http://192.168.1.7:3000/products/${id}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: commentText.trim(),
-          userId,
-          userName,
-        }),
-      });
-      if (!res.ok) throw new Error('Erro ao adicionar comentário');
-      const newComment = await res.json();
-      setComments((prev) => [newComment, ...prev]);
-      setCommentText('');
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  // Atualizar comentário
-  async function handleUpdateComment(commentId: string, newText: string) {
-    try {
-      const res = await fetch(`http://192.168.1.7:3000/comments/${commentId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newText }),
-      });
-      if (!res.ok) throw new Error('Erro ao atualizar comentário');
-      const updatedComment = await res.json();
-
-      setComments((prev) =>
-        prev.map((comment) => (comment.id === commentId ? updatedComment : comment))
+      const res = await axios.get(
+        `${API_BASE}/products/${productId}/comments?sort=${sortByNewest ? 'newest' : 'oldest'}`
       );
-    } catch (err) {
-      console.error(err);
+      setComments(res.data);
+    } catch {
+      Alert.alert('Erro', 'Não foi possível carregar os comentários.');
     }
-  }
+  };
 
-  // Excluir comentário
-  async function handleDeleteComment(commentId: string) {
+  const fetchLikedComments = async () => {
     try {
-      const res = await fetch(`http://192.168.1.7:3000/comments/${commentId}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Erro ao deletar comentário');
-      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+      const token = await AsyncStorage.getItem('userToken');
+      const res = await axios.get(
+        `${API_BASE}/users/${userId}/liked-comments`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setLikedComments(res.data);
     } catch (err) {
-      console.error(err);
+      console.log('Erro ao buscar likes', err);
     }
-  }
+  };
+  const confirmDelete = (id: string) => {
+    Alert.alert(
+      'Excluir comentário',
+      'Tem certeza que deseja excluir este comentário?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Excluir', style: 'destructive', onPress: () => handleDeleteComment(id) },
+      ]
+    );
+  };
 
-  if (loading) {
-    return <Text className="text-center mt-10">Carregando...</Text>;
-  }
 
-  if (error) {
-    return <Text className="text-center mt-10 text-red-500">{error}</Text>;
-  }
+  useEffect(() => {
+    fetchProduto();
+  }, [productId]);
 
-  if (!product) {
-    return <Text className="text-center mt-10">Produto não encontrado.</Text>;
-  }
+  useEffect(() => {
+    if (userId) {
+      fetchComments();
+      fetchLikedComments();
+    }
+  }, [userId, sortByNewest, productId]);
+
+  const handleAddComment = async () => {
+    if (!commentText.trim()) return;
+
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const res = await axios.post(
+        `${API_BASE}/products/${productId}/comments`,
+        { text: commentText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setComments([res.data, ...comments]);
+      setCommentText('');
+    } catch {
+      Alert.alert('Erro', 'Não foi possível adicionar o comentário.');
+    }
+  };
+
+  const handleEditComment = async (commentId: string, newText: string) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await axios.put(
+        `${API_BASE}/products/${productId}/comments/${commentId}`,
+        { text: newText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const updateText = (items: Comment[]): Comment[] =>
+        items.map((item) => ({
+          ...item,
+          text: item.id === commentId ? newText : item.text,
+          replies: item.replies ? updateText(item.replies) : [],
+        }));
+
+      setComments((prev) => updateText(prev));
+    } catch {
+      Alert.alert('Erro', 'Não foi possível editar o comentário.');
+    }
+  };
+
+  const handleDeleteComment = async (id: string) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await axios.delete(
+        `${API_BASE}/products/${productId}/comments/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const removeRecursively = (items: Comment[]): Comment[] =>
+        items
+          .filter((c) => c.id !== id)
+          .map((c) => ({
+            ...c,
+            replies: c.replies ? removeRecursively(c.replies) : [],
+          }));
+
+      setComments((prev) => removeRecursively(prev));
+      setLikedComments((prev) => prev.filter((cid) => cid !== id));
+    } catch {
+      Alert.alert('Erro', 'Não foi possível excluir o comentário.');
+    }
+  };
+
+  const handleToggleLike = async (commentId: string) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await axios.patch(
+        `${API_BASE}/products/${productId}/comments/${commentId}/like`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const updateLikes = (items: Comment[]): Comment[] =>
+        items.map((item) => {
+          if (item.id === commentId) {
+            const alreadyLiked = likedComments.includes(commentId);
+            return {
+              ...item,
+              likes: alreadyLiked ? Math.max(0, item.likes - 1) : item.likes + 1,
+            };
+          }
+          return {
+            ...item,
+            replies: item.replies ? updateLikes(item.replies) : [],
+          };
+        });
+
+      setComments((prev) => updateLikes(prev));
+      setLikedComments((prev) =>
+        prev.includes(commentId)
+          ? prev.filter((id) => id !== commentId)
+          : [...prev, commentId]
+      );
+    } catch {
+      Alert.alert('Erro', 'Não foi possível curtir o comentário.');
+    }
+  };
+
+  const handleReply = async (parentId: string, text: string) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const res = await axios.post(
+        `${API_BASE}/products/${productId}/comments`,
+        { text, parentId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const insertReply = (items: Comment[]): Comment[] =>
+        items.map((item) => ({
+          ...item,
+          replies: item.id === parentId
+            ? [res.data, ...(item.replies || [])]
+            : item.replies
+              ? insertReply(item.replies)
+              : [],
+        }));
+
+      setComments((prev) => insertReply(prev));
+    } catch {
+      Alert.alert('Erro', 'Não foi possível responder ao comentário.');
+    }
+  };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-row items-center justify-between px-4 py-4 bg-white border-b border-gray-200">
-        <TouchableOpacity onPress={() => router.back()} className="p-2">
-          <Ionicons name="arrow-back" size={24} color="#333" />
+    <View className="flex-1 bg-white">
+      <StatusBar barStyle="dark-content" />
+
+      <View className="flex-row justify-between items-center px-4 py-3 bg-white shadow z-10">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="w-10 h-10 rounded-full bg-orange-500 items-center justify-center"
+        >
+          <Feather name="arrow-left" size={20} color="white" />
         </TouchableOpacity>
 
-        <View className="flex-row items-center flex-1 justify-center">
-          <Text className="text-lg font-semibold text-gray-800">
-            Vendido por {product.market.name}
-          </Text>
-          {product.market.verified && (
-            <Feather name="check-circle" size={16} color="#09aa09" className="ml-1" />
-          )}
+        <View className="flex-1 px-4 items-center">
+          <Text className="text-xxs font-bold text-gray-700">Vendido por</Text>
+          <View className="flex-row items-center">
+            <Text className="text-xl font-bold text-orange-500 mr-1">
+              {produto?.market.name}
+            </Text>
+            {produto?.market.verified && (
+              <Feather name="check-circle" size={14} color="#22c55e" />
+            )}
+          </View>
         </View>
 
-        <TouchableOpacity onPress={() => console.log('Opções clicadas')} className="p-2">
-          <Ionicons name="ellipsis-vertical" size={24} color="#333" />
+        <TouchableOpacity className="w-10 h-10 rounded-full bg-orange-500 items-center justify-center">
+          <Feather name="more-horizontal" size={20} color="white" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1 px-4 py-4" keyboardShouldPersistTaps="handled">
-        <Image source={{ uri: product.image }} className="w-full h-64 rounded-2xl" resizeMode="cover" />
-
-        <View className="mt-4 flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-gray-800">{product.name}</Text>
-          <TouchableOpacity>
-            <Ionicons name="heart-outline" size={24} color="#444" />
-          </TouchableOpacity>
+      <ScrollView className="flex-1 bg-white" keyboardShouldPersistTaps="handled">
+        <View className="px-4 pt-4">
+          {produto && <CardHorizontalFood food={produto} />}
         </View>
 
-        <Text className="text-xl text-orange-500 font-semibold">
-          {typeof product.price === 'number' ? `R$ ${product.price.toFixed(2).replace('.', ',')}` : 'Preço indisponível'}
-        </Text>
+        <View className="my-6 h-px bg-gray-300 mx-4" />
 
-        <View className="flex-row items-center mt-2">
-          <Text className="text-base text-gray-700">{product.market.name}</Text>
-          {product.market.verified && (
-            <Feather name="check-circle" size={16} color="#09aa09" className="ml-1" />
-          )}
-          <Ionicons name="star" size={16} color="#FFA500" className="ml-2" />
-          <Text className="ml-1 text-gray-600 text-sm">{product.market.rating.toFixed(1)}</Text>
-        </View>
-
-        <TouchableOpacity className="mt-4 bg-orange-500 py-2 rounded-xl items-center">
-          <Text className="text-white font-semibold">Comparar Preço</Text>
-        </TouchableOpacity>
-
-        {/* Seção de Avaliações Dinâmicas */}
-        <Text className="mt-6 text-base font-semibold text-gray-800">Avaliações</Text>
-
-        {/* Input para novo comentário */}
-        <View className="mt-4">
-          <TextInput
-            className="border p-2 rounded"
-            placeholder="Deixe seu comentário"
-            multiline
-            value={commentText}
-            onChangeText={setCommentText}
-          />
-          <TouchableOpacity
-            onPress={handleAddComment}
-            className="mt-2 bg-green-500 py-2 rounded-xl items-center"
-          >
-            <Text className="text-white font-semibold">Enviar Comentário</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Lista de comentários */}
-        {comments.length === 0 ? (
-          <Text className="text-sm text-gray-500 mt-2">Nenhum comentário ainda.</Text>
-        ) : (
-          comments.map((comment) => (
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              currentUserId={userId}
-              onDelete={handleDeleteComment}
-              onUpdate={handleUpdateComment}
-            />
-          ))
-        )}
-
-        {/* Exemplo estático que você tinha */}
-        {product.userLikePercentage !== undefined && (
-          <View className="mt-4 flex-row items-center">
-            <AntDesign name="like1" size={16} color="#09aa09" />
-            <Text className="ml-1 text-green-700 text-sm">
-              {product.userLikePercentage}% dos usuários gostaram
-            </Text>
+        <View className="px-4 pb-8">
+          <View className="flex-row justify-between items-center mb-1">
+            <Text className="text-xl font-bold text-gray-800">Comentários</Text>
+            {comments.length > 0 && (
+              <Text className="text-sm text-gray-500">{comments.length} comentário(s)</Text>
+            )}
           </View>
-        )}
+
+          <View className="flex-row justify-between items-center">
+            <Text className="text-sm text-gray-600">
+              Ordenar: {sortByNewest ? 'Mais recentes' : 'Mais antigos'}
+            </Text>
+            <TouchableOpacity onPress={() => setSortByNewest(!sortByNewest)}>
+              <Feather name="refresh-ccw" size={18} color="#333" />
+            </TouchableOpacity>
+          </View>
+
+          <View className="mt-4 space-y-3">
+            <TextInput
+              className="border border-gray-300 p-3 rounded-xl text-black bg-white"
+              placeholder="Deixe seu comentário..."
+              multiline
+              value={commentText}
+              onChangeText={setCommentText}
+            />
+            <TouchableOpacity
+              onPress={handleAddComment}
+              className="bg-green-600 py-3 px-4 rounded-full items-center flex-row justify-center"
+            >
+              <Feather name="send" size={16} color="white" />
+              <Text className="text-white font-semibold ml-2">Enviar</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View className="mt-6 space-y-2">
+            {comments.length === 0 ? (
+              <Text className="text-sm text-gray-500">Nenhum comentário ainda.</Text>
+            ) : (
+              comments.map((comment) => (
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                  currentUserId={userId}
+                  onDelete={confirmDelete}
+                  onReply={handleReply}
+                  onLike={handleToggleLike}
+                  onEdit={handleEditComment}
+                  likedComments={likedComments}
+                />
+              ))
+            )}
+          </View>
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

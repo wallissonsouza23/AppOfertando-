@@ -136,6 +136,7 @@ export class UserController {
     });
   }
 
+
   @Get('me') // NOVO ENDPOINT: Para o frontend buscar o perfil completo do usuário logado
   @UseGuards(JwtAuthGuard)
   async getMyProfile(@Req() req: RequestWithUser) {
@@ -150,6 +151,16 @@ export class UserController {
     const { senha, ...result } = user; // Remover a senha
     return result;
   }
+
+  @Get(':id/liked-comments')
+  @UseGuards(JwtAuthGuard)
+  async getLikedComments(@Param('id') id: string, @Req() req: RequestWithUser) {
+    if (req.user.id !== id) {
+      throw new HttpException('Sem permissão para acessar os likes de outro usuário.', HttpStatus.FORBIDDEN);
+    }
+    return this.userService.getLikedCommentIds(id);
+  }
+
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)

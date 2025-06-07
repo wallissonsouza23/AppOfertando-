@@ -3,9 +3,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { API_BASE } from './api'; // Ajuste o caminho se necessário
 
-// Sua URL base da API. Certifique-se de que este IP é acessível pelo seu emulador/dispositivo.
-const API_BASE = 'http://172.20.10.2:3000'; // VERIFIQUE E AJUSTE ESTE IP SE NECESSÁRIO!
+
+
+
 
 interface UserInfo {
   id: string;
@@ -54,13 +56,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Verifique se o payload contém as propriedades esperadas
       if (!payload.sub || !payload.email) {
-          console.warn('Payload JWT incompleto: missing sub or email.');
-          return null;
+        console.warn('Payload JWT incompleto: missing sub or email.');
+        return null;
       }
-      
+
       // CORREÇÃO AQUI: Armazenar avatarUrl como RELATIVO no estado do contexto
       const relativeAvatarUrl = getRelativeAvatarUrl(payload.avatarUrl);
-      
+
       // Construa o userInfo a partir do payload do JWT
       return {
         id: payload.sub,
@@ -86,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (userInfo) {
             setUser(userInfo);
           } else {
-            await AsyncStorage.removeItem('userToken'); 
+            await AsyncStorage.removeItem('userToken');
             setUser(null);
           }
         }
@@ -134,23 +136,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   }, []);
 
-  const signIn = async (email: string, senha: string) => { 
+  const signIn = async (email: string, senha: string) => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_BASE}/auth/login`, { email, senha });
+
       console.log('Resposta do backend no login:', response.data);
 
-      const { token, user: userData } = response.data; 
-      
+      const { token, user: userData } = response.data;
+
       await AsyncStorage.setItem('userToken', token);
-      
+
       // CORREÇÃO AQUI: Armazenar avatarUrl como RELATIVO no estado do contexto
       const userToSet = {
         ...userData,
         avatarUrl: getRelativeAvatarUrl(userData.avatarUrl) // Garante que seja relativo
       };
 
-      setUser(userToSet); 
+      setUser(userToSet);
       console.log('Login bem-sucedido. Usuário no AuthContext:', userToSet);
     } catch (error: any) {
       console.error("Erro no login:", error.response?.data?.message || error.message);
@@ -165,7 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await axios.post(`${API_BASE}/auth/register`, {
         nome,
-        dataNascimento, 
+        dataNascimento,
         telefone,
         email,
         senha
@@ -182,7 +185,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const forgotPassword = async (email: string) => {
     setLoading(true);
     try {
-      await axios.post(`${API_BASE}/auth/forgot-password`, { email }); 
+      await axios.post(`${API_BASE}/auth/forgot-password`, { email });
       console.log('Solicitação de redefinição de senha enviada para:', email);
     } catch (error: any) {
       console.error("Erro na redefinição de senha:", error.response?.data?.message || error.message);
@@ -199,7 +202,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await AsyncStorage.removeItem('userToken');
       setUser(null);
       console.log('Logout bem-sucedido.');
-      router.replace('/login'); 
+      router.replace('/login');
     } catch (error: any) {
       console.error("Erro ao fazer logout:", error.message);
       throw new Error(error.message || "Falha ao fazer logout.");
@@ -215,12 +218,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = (newUserData: Partial<UserInfo>) => {
     setUser(prevUser => {
       if (!prevUser) return null;
-      
+
       // CORREÇÃO AQUI: Garantir que o avatarUrl seja RELATIVO ANTES de armazenar no estado
       const updatedAvatarUrl = getRelativeAvatarUrl(newUserData.avatarUrl);
 
-      return { 
-        ...prevUser, 
+      return {
+        ...prevUser,
         ...newUserData,
         ...(updatedAvatarUrl !== undefined ? { avatarUrl: updatedAvatarUrl } : {}) // Atualiza apenas se provided
       };

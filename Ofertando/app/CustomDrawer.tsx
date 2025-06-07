@@ -8,9 +8,9 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../utils/auth';
 import { useRouter } from 'expo-router';
+import { API_BASE } from '../utils/api';
 
 
-const API_BASE = 'http://172.20.10.2:3000'; // Certifique-se de que este IP é o correto para o seu backend
 
 const ACTIVE_COLOR = '#FF6600';
 const INACTIVE_COLOR = '#000';

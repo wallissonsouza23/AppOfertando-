@@ -31,7 +31,7 @@ import { CommentModule } from './comment/comment.module';
       username: 'root',
       password: '782501',
       database: 'ofertando',
-      autoLoadEntities: true, // <-- ADICIONE ESTA LINHA
+      autoLoadEntities: true, 
       synchronize: true,
     }),
     UserModule,

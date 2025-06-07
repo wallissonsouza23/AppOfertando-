@@ -3,7 +3,7 @@ import { Pressable, View, Text, Image, TouchableOpacity } from 'react-native';
 import { Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { FoodProps } from '../../../types/FoodProps';
 import { useRouter } from 'expo-router';
-import { ScrollView } from 'react-native-gesture-handler';
+
 
 export function CardHorizontalFood({ food }: { food: FoodProps }) {
   const router = useRouter();

@@ -5,13 +5,26 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CommentLike } from '../comment/entities/comment-like.entity';
 
 @Injectable()
 export class UserService {
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+    @InjectRepository(CommentLike)
+    private likeRepository: Repository<CommentLike>,
+  ) { }
+
+  async getLikedCommentIds(userId: string): Promise<string[]> {
+    const likes = await this.likeRepository.find({
+      where: { user: { id: userId } },
+      relations: ['comment'],
+    });
+
+    return likes.map(like => like.comment.id);
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);

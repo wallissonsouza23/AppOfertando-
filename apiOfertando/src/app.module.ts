@@ -11,6 +11,7 @@ import { ProductModule } from './product/product.module';
 import { MarketModule } from './market/market.module';
 import { CommentModule } from './comment/comment.module';
 
+
 @Module({
   imports: [
     // Torna as variáveis de ambiente acessíveis globalmente
@@ -39,6 +40,7 @@ import { CommentModule } from './comment/comment.module';
     ProductModule,
     MarketModule,
     CommentModule,
+  
   ],
   controllers: [AppController],
   providers: [AppService],

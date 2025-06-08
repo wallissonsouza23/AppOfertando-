@@ -33,7 +33,7 @@ export default function Banner() {
             onPress={() => console.log('CLICOU NO BANNER 1')}
           >
             <Image
-              source={require('../../assets/banner2.png')}
+              source={require('../../assets/1.png')}
               className="w-full h-36 md:h-60 object-cover"
             />
           </Pressable>
@@ -42,10 +42,38 @@ export default function Banner() {
             onPress={() => console.log('CLICOU NO BANNER 2')}
           >
             <Image
-              source={require('../../assets/banner3.png')}
+              source={require('../../assets/2.png')}
               className="w-full h-36 md:h-60 object-cover"
             />
           </Pressable>
+            <Pressable
+            key="3"
+            onPress={() => console.log('CLICOU NO BANNER 2')}
+          >
+            <Image
+              source={require('../../assets/3.png')}
+              className="w-full h-36 md:h-60 object-cover"
+            />
+          </Pressable>
+          <Pressable
+            key="4"
+            onPress={() => console.log('CLICOU NO BANNER 2')}
+          >
+            <Image
+              source={require('../../assets/4.png')}
+              className="w-full h-36 md:h-60 object-cover"
+            />
+          </Pressable>
+          <Pressable
+            key="5"
+            onPress={() => console.log('CLICOU NO BANNER 2')}
+          >
+            <Image
+              source={require('../../assets/5.png')}
+              className="w-full h-36 md:h-60 object-cover"
+            />
+          </Pressable>
+
         </PagerView>
       </View>
 

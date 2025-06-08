@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+
+import { ProductLike } from 'src/product/entities/product-like.entity';
 
 @Entity('users')
 export class User {
@@ -34,4 +37,9 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+
+  @OneToMany(() => ProductLike, (like) => like.user)
+  likes: ProductLike[];
+
 }

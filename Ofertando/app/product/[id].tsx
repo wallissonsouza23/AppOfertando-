@@ -78,18 +78,6 @@ export default function Produto({ productId: propProductId }: { productId?: stri
     }
   };
 
-  const fetchLikedComments = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const res = await axios.get(
-        `${API_BASE}/users/${userId}/liked-comments`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setLikedComments(res.data);
-    } catch (err) {
-      console.log('Erro ao buscar likes', err);
-    }
-  };
   const confirmDelete = (id: string) => {
     Alert.alert(
       'Excluir comentário',
@@ -101,17 +89,13 @@ export default function Produto({ productId: propProductId }: { productId?: stri
     );
   };
 
-
   useEffect(() => {
     fetchProduto();
   }, [productId]);
 
   useEffect(() => {
-    if (userId) {
-      fetchComments();
-      fetchLikedComments();
-    }
-  }, [userId, sortByNewest, productId]);
+    fetchComments();
+  }, [sortByNewest, productId]);
 
   const handleAddComment = async () => {
     if (!commentText.trim()) return;

@@ -1,5 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Market } from 'src/market/entities/market.entity';
+
+import { ProductLike } from './product-like.entity';
+
 
 @Entity()
 export class Product {
@@ -27,4 +30,10 @@ export class Product {
   // --- RELAÇÃO COM MARKET ---
   @ManyToOne(() => Market, (market) => market.products, { eager: true })
   market: Market;
+
+
+  @OneToMany(() => ProductLike, (like: ProductLike) => like.product, { cascade: true })
+  likes: ProductLike[];
+
+
 }

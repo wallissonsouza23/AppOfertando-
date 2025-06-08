@@ -12,11 +12,12 @@ import 'react-native-gesture-handler';
 
 import { useRouter } from 'expo-router';
 
-
-
-
 const statusBarHeight = Constants.statusBarHeight
 
+const banners = [
+  require("../../../assets/11.png"),
+  require("../../../assets/12.png"),
+];
 export default function Home() {
 
   const router = useRouter();
@@ -29,24 +30,30 @@ export default function Home() {
 
       <View className="w-full px-4" style={{ marginTop: statusBarHeight + 8 }}>
         <Header />
-        <View className="w-full h-36 md:h-60 mb-3 bg-orange-500 rounded-br-full ">
-          <PagerView style={{ flex: 1 }} initialPage={0} pageMargin={14}>
-            <Pressable className='w-full h-36 md:h-60 rounded-2xl'
-              key={1}
-              onPress={() => console.log("CLICOU NO BANNER 1")}>
-              <Image
-                source={require("../../../assets/banner1.png")}
-                className='w-full h-auto md:h-60 rounded-br-full object-cover' />
-              <Pressable
-                className="absolute bottom-4 left-4 bg-black rounded-md px-4 py-2"
-                onPress={() => router.push('/modal')}
-              >
-                <Text className="text-white font-bold text-xs">COMEÇAR</Text>
-              </Pressable>
-
-            </Pressable>
-          </PagerView>
-        </View>
+         {/* Banner rotativo */}
+                <View className="w-full h-36 md:h-60 mb-3 bg-orange-500 rounded-br-full overflow-hidden">
+                  <PagerView style={{ flex: 1 }} initialPage={0} pageMargin={14}>
+                    {banners.map((img, index) => (
+                      <Pressable
+                        key={index}
+                        className="w-full h-36 md:h-60 rounded-2xl"
+                        onPress={() => console.log(`CLICOU NO BANNER ${index + 1}`)}
+                      >
+                        <Image
+                          source={img}
+                          className="w-full h-full rounded-br-full object-contain"
+                          resizeMode="cover"
+                        />
+                        <Pressable
+                          className="absolute bottom-4 left-4 bg-black/70 rounded-md px-4 py-2"
+                          onPress={() => router.push('/modal')}
+                        >
+                          <Text className="text-white font-bold text-xs">COMEÇAR</Text>
+                        </Pressable>
+                      </Pressable>
+                    ))}
+                  </PagerView>
+                </View>
 
         <Search />
         <Banner />

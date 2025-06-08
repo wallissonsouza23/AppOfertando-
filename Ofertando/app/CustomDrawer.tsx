@@ -119,7 +119,7 @@ export default function CustomDrawer(props: any) {
           onPress={() => router.navigate('/(drawer)/(tabs)/favoritos')}
         >
           <Ionicons
-            name="star"
+            name="heart"
             size={22}
             color={isRouteActive('favoritos') ? ACTIVE_COLOR : INACTIVE_COLOR}
           />

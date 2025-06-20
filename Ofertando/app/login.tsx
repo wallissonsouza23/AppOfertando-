@@ -26,19 +26,14 @@ export default function LoginScreen() {
   }, [params.registeredEmail]); // O useEffect será executado quando registeredEmail mudar nos parâmetros
 
   const handleLogin = async () => {
-    if (!email.trim() || !senha.trim()) { // Adicionado .trim() para evitar espaços em branco
+    if (!email.trim() || !senha.trim()) { // .trim() para evitar espaços em branco
       Alert.alert('Erro', 'Por favor, preencha seu e-mail e senha.');
       return;
     }
 
     setIsLoading(true); // Ativa loading local
     try {
-      await signIn(email, senha); // Chama o signIn do useAuth (que agora usa sua API real)
-      // Se o login for bem-sucedido, o `AuthContext` irá atualizar o `user` e o `_layout.tsx`
-      // automaticamente redirecionará para a tela principal (home).
-      // Não precisamos de Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      // nem router.replace('/home'); aqui, pois o _layout.tsx já cuida disso
-      // ao detectar que `user` não é null.
+      await signIn(email, senha); 
     } catch (error: any) {
       console.error('Erro no login:', error.message);
       // Exibe a mensagem de erro que veio do `auth.ts` (que por sua vez veio do backend)

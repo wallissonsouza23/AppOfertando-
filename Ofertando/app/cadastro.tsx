@@ -23,7 +23,7 @@ export default function CadastroScreen() {
   const [senhaError, setSenhaError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // ... (suas funções de validação existentes) ...
+  // ...  funções de validação ...
   const validaEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const validaData = (value: string) => /^\d{2}\/\d{2}\/\d{4}$/.test(value);
   const validaTelefone = (value: string) => /^\(\d{2}\)\d{4,5}-\d{4}$/.test(value);
@@ -59,7 +59,7 @@ export default function CadastroScreen() {
     }
     setTelefone(cleaned);
   };
-  // ... (fim das suas funções de validação existentes) ...
+
 
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export default function CadastroScreen() {
     Alert.alert('Sucesso', 'Cadastro realizado com sucesso!', [
       {
         text: 'OK',
-        // MODIFICAÇÃO AQUI: Passar o email como parâmetro para a tela de login
+        // Passar o email como parâmetro para a tela de login
         onPress: () => router.push({ pathname: '/login', params: { registeredEmail: email } })
       }
     ]);

@@ -1,0 +1,22 @@
+### Registrar Usuário
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "telefone": "5511987654321",
+  "dataNascimento": "1990-05-25",
+  "email": "joao.silva@example.com",
+  "senha": "UmaSenhaMuitoSegura123!"
+}
+
+###
+
+### Login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao.silva@example.com",
+  "senha": "UmaSenhaMuitoSegura123!"
+}

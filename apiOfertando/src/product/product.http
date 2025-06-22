@@ -1,0 +1,39 @@
+### Listar Produtos
+GET http://localhost:3000/product
+
+###
+
+### Obter Produto por ID
+GET http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
+
+###
+
+### Criar Produto (Requer token)
+POST http://localhost:3000/product
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "nome": "Banana",
+  "descricao": "Banana prata, 1kg",
+  "preco": 5.50,
+  "categoria": "frutas",
+  "imagemUrl": "http://example.com/banana.png"
+}
+
+###
+
+### Atualizar Produto (Requer token)
+PATCH http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "preco": 4.99
+}
+
+###
+
+### Excluir Produto (Requer token)
+DELETE http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>

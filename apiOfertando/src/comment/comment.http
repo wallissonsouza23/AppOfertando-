@@ -1,0 +1,36 @@
+### Listar Comentários
+GET http://localhost:3000/comment
+
+###
+
+### Obter Comentário por ID
+GET http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+
+###
+
+### Criar Comentário (Requer token)
+POST http://localhost:3000/comment
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "produtoId": "<ID_DO_PRODUTO_AQUI>",
+  "texto": "Ótimo produto, recomendo!"
+}
+
+###
+
+### Atualizar Comentário (Requer token)
+PATCH http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "texto": "Produto excelente, recomendo muito!"
+}
+
+###
+
+### Excluir Comentário (Requer token)
+DELETE http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>

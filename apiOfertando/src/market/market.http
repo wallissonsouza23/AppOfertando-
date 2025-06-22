@@ -1,0 +1,38 @@
+### Listar Mercados
+GET http://localhost:3000/market
+
+###
+
+### Obter Mercado por ID
+GET http://localhost:3000/market/<ID_DO_MERCADO_AQUI>
+
+###
+
+### Criar Mercado (Requer token)
+POST http://localhost:3000/market
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "nome": "Supermercado Central",
+  "endereco": "Rua Principal, 123",
+  "telefone": "5511999999999",
+  "email": "contato@supercentral.com"
+}
+
+###
+
+### Atualizar Mercado (Requer token)
+PATCH http://localhost:3000/market/<ID_DO_MERCADO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>
+Content-Type: application/json
+
+{
+  "telefone": "5511988888888"
+}
+
+###
+
+### Excluir Mercado (Requer token)
+DELETE http://localhost:3000/market/<ID_DO_MERCADO_AQUI>
+Authorization: Bearer <SEU_TOKEN_JWT>

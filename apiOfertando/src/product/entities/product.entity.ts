@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Market } from 'src/market/entities/market.entity';
+import { Market } from '../../market/entities/market.entity';
 
 import { ProductLike } from './product-like.entity';
 

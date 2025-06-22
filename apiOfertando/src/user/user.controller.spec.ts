@@ -1,20 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from '../app.module';
 
-describe('UserController', () => {
-  let controller: UserController;
+describe('UserController (e2e)', () => {
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [UserService],
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    app = moduleFixture.createNestApplication();
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('/users (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/users')
+      .expect(200)
+      .expect('This action returns all users');
+  });
+
+  it('/users (POST)', () => {
+    const novoUsuario = {
+      name: 'Wallisson',
+      email: 'wallisson@email.com',
+    };
+
+    return request(app.getHttpServer())
+      .post('/users')
+      .send(novoUsuario)
+      .expect(201)
+      .expect((res) => {
+        expect(res.body).toHaveProperty('message', 'Usuário criado com sucesso');
+        expect(res.body.data).toEqual(novoUsuario);
+      });
   });
 });

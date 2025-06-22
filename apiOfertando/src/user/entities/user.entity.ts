@@ -7,7 +7,7 @@ import {
   OneToMany
 } from 'typeorm';
 
-import { ProductLike } from 'src/product/entities/product-like.entity';
+import { ProductLike } from '../../product/entities/product-like.entity';
 
 @Entity('users')
 export class User {

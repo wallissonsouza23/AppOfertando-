@@ -1,7 +1,7 @@
 export class CreateMarketDto {
   name: string;
   logo: string;
-  location: string;
+  address: string;
   rating?: number;
   verified?: boolean;
   description?: string;

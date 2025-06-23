@@ -1,39 +1,51 @@
-### Listar Produtos
-GET http://localhost:3000/product
-
-###
-
-### Obter Produto por ID
-GET http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
-
-###
-
-### Criar Produto (Requer token)
-POST http://localhost:3000/product
-Authorization: Bearer <SEU_TOKEN_JWT>
+### Criar produto
+POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-  "nome": "Banana",
-  "descricao": "Banana prata, 1kg",
-  "preco": 5.50,
-  "categoria": "frutas",
-  "imagemUrl": "http://example.com/banana.png"
+  "name": "Abacaxi Pérola",
+  "price": 7.99,
+  "featured": true,
+  "category": "Frutas",
+  "image": "https://cdn.example.com/abacaxi.jpg",
+  "userLikePercentage": 87,
+  "marketId": 1
 }
 
 ###
 
-### Atualizar Produto (Requer token)
-PATCH http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
-Authorization: Bearer <SEU_TOKEN_JWT>
-Content-Type: application/json
-
-{
-  "preco": 4.99
-}
+### Buscar todos os produtos
+GET http://localhost:3000/products
 
 ###
 
-### Excluir Produto (Requer token)
-DELETE http://localhost:3000/product/<ID_DO_PRODUTO_AQUI>
-Authorization: Bearer <SEU_TOKEN_JWT>
+### Buscar produtos por categoria (Frutas)
+GET http://localhost:3000/products?category=Frutas
+
+###
+
+### Buscar produtos em destaque
+GET http://localhost:3000/products/featured
+
+###
+
+### Verificar se um produto está favoritado (substitua TOKEN e ID do produto)
+GET http://localhost:3000/products/favorites/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Alternar like (favoritar/desfavoritar)
+PATCH http://localhost:3000/products/1/like
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Buscar produtos favoritados pelo usuário logado
+GET http://localhost:3000/products/favorites
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Buscar produto por ID
+GET http://localhost:3000/products/1

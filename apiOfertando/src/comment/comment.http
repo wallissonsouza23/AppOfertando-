@@ -1,36 +1,47 @@
-### Listar Comentários
-GET http://localhost:3000/comment
+### 📃 Listar todos os comentários de um produto
+GET http://localhost:3000/products/1/comments
 
 ###
 
-### Obter Comentário por ID
-GET http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+### 📃 Listar comentários ordenados por mais antigos
+GET http://localhost:3000/products/1/comments?sort=oldest
 
 ###
 
-### Criar Comentário (Requer token)
-POST http://localhost:3000/comment
+### ✏️ Criar um novo comentário (requer token)
+POST http://localhost:3000/products/1/comments
 Authorization: Bearer <SEU_TOKEN_JWT>
 Content-Type: application/json
 
 {
-  "produtoId": "<ID_DO_PRODUTO_AQUI>",
-  "texto": "Ótimo produto, recomendo!"
+  "text": "Esse produto é incrível! Recomendo demais."
 }
 
 ###
 
-### Atualizar Comentário (Requer token)
-PATCH http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+### ✏️ Atualizar comentário (requer token)
+PUT http://localhost:3000/products/1/comments/c1
 Authorization: Bearer <SEU_TOKEN_JWT>
 Content-Type: application/json
 
 {
-  "texto": "Produto excelente, recomendo muito!"
+  "text": "Atualização: produto ainda excelente!"
 }
 
 ###
 
-### Excluir Comentário (Requer token)
-DELETE http://localhost:3000/comment/<ID_DO_COMENTARIO_AQUI>
+### ❤️ Curtir ou descurtir comentário (toggle like, requer token)
+PATCH http://localhost:3000/products/1/comments/c1/like
+Authorization: Bearer <SEU_TOKEN_JWT>
+
+###
+
+### 🗑️ Excluir comentário (requer token)
+DELETE http://localhost:3000/products/1/comments/c1
+Authorization: Bearer <SEU_TOKEN_JWT>
+
+###
+
+### ✅ Buscar IDs dos comentários curtidos por um usuário (requer token)
+GET http://localhost:3000/products/1/comments/users/user1/liked-comments
 Authorization: Bearer <SEU_TOKEN_JWT>

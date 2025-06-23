@@ -62,7 +62,7 @@ export class ProductController {
     return this.productService.toggleLike(Number(id), user);
   }
 
-  // COLOQUE ESTE POR ÚLTIMO
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     const numericId = Number(id);

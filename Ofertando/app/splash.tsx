@@ -8,7 +8,7 @@ const SplashScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.replace('/'); // Redireciona para a tela principal (index.tsx)
-    }, 2000); // 4 segundos de splash
+    }, 2000); // 2 segundos de splash
 
     return () => clearTimeout(timer);
   }, []);
@@ -16,6 +16,7 @@ const SplashScreen = () => {
   return (
     <View className="flex-1 items-center justify-center bg-slate-100">
       <Image
+        testID="logo-image"  // <-- Adicionado para testes
         source={require('../assets/logo.png')} // Substitua pelo caminho correto do logo
         style={{ width: 200, height: 200 }}
         resizeMode="contain"

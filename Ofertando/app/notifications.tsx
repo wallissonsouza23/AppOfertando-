@@ -1,6 +1,6 @@
 // app/notifications.tsx
 import { View, Text, FlatList, TouchableOpacity, Pressable } from "react-native";
-import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -64,7 +64,10 @@ export default function NotificationsScreen() {
         <SafeAreaView className="flex-1 bg-white">
 
             <View className="flex-row items-center px-8 py-3 bg-white border-b border-gray-200"> 
-                <Pressable onPress={() => navigation.goBack()}>
+                <Pressable 
+                    onPress={() => navigation.goBack()} 
+                    testID="btn-back"  // testID adicionado para teste
+                >
                     <View className="w-10 h-10 rounded-full items-center justify-center bg-orange-500"> 
                         <Feather name="arrow-left" size={24} color="#fff" />
                     </View>
@@ -72,7 +75,6 @@ export default function NotificationsScreen() {
                 <Text className="text-black text-2xl font-bold ml-5">Notificações</Text> 
             </View>
 
-            {/* Conteúdo da tela */}
             <FlatList
                 className="px-6 pt-2"
                 data={notifications}
@@ -89,7 +91,6 @@ export default function NotificationsScreen() {
                                 <Feather name={item.icon as any} size={20} color="#fff" />
                             )}
                         </View>
-
 
                         <View className="flex-1">
                             <Text className="font-bold text-base">{item.title}</Text>

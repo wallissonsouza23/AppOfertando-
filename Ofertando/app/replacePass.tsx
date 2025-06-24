@@ -2,28 +2,27 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-import { redefinirSenha } from '../utils/auth'; // ajuste o caminho conforme sua estrutura
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { useAuth } from '../utils/auth'; // ← aqui é o correto
 
 export default function ReplacePass() {
   const [userEmail, setUserEmail] = useState('');
   const router = useRouter();
+  const { forgotPassword } = useAuth(); // ← obtém do contexto
 
   async function replacePass() {
     if (!userEmail) {
       Alert.alert('Erro', 'Por favor, insira seu email.');
       return;
     }
-  
+
     try {
-      await redefinirSenha(userEmail);
+      await forgotPassword(userEmail); // ← usa diretamente do contexto
       Alert.alert('Sucesso', 'Verifique seu email para redefinir sua senha.');
       router.back();
     } catch (error: any) {
       Alert.alert('Erro', error.message || 'Não foi possível enviar o email.');
     }
   }
-  
 
   return (
     <View style={styles.container}>
